@@ -1,28 +1,33 @@
-var express = require('express');
-var app = express();
-var path=require("path");
-var fs=require("fs");
+let express = require('express');
+let app = express();
+let bodyparser = require('body-parser');
 
+app.use(bodyparser.urlencoded({extended: false}));
 
-//server configuration
-app.use(express.static(path.join(__dirname,'public')));
+let logger = function(req, resp, next){
+    console.log(req.url);
+    console.log(req.method);
 
- app.get('/', function (req, res) {
-   res.sendFile(path.join(___dirname + '/index.html'));
-});
- 
+    next();
+}
 
-app.get('/hello', function (req, res) {
-  console.log("CAlling rest api");
-  var person={firstName:'Ravi',lastName:'Tambade',age:43};
-  res.send(person);
-});
+let sayhello = (req, resp) => {
+    resp.send("HEllo world");
+}
 
- 
-var server = app.listen(8081, function () {
+let saynamaste = (req, resp) => {
+    resp.send("Namaste India");
+}
 
-  var host = server.address().address
-  var port = server.address().port
+let wish = (req, resp) => {
+    resp.send("Wishing you all a very successful ASDM exam .. 👍🏽👍🏽👍🏽🌞🔆");
+}
 
-  console.log("Example app listening at http://localhost:8081", host, port)
+app.use(logger);
+app.use('/namaste', saynamaste);
+app.use('/wish', wish);
+app.use('/', sayhello);
+
+app.listen(8081, () => {
+    console.log('Server is started on 8081')
 })
